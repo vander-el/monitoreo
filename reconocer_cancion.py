@@ -5,7 +5,24 @@ import time
 import requests
 
 def reconocer_cancion(nombre_archivo, acr_key, acr_secret, acr_host):
-    with open(nombre_archivo, 'rb') as f:
+  import requests
+import io
+
+def reconocer_cancion(nombre_archivo, acr_key, acr_secret, acr_host):
+    if nombre_archivo.startswith('http'):
+        response = requests.get(nombre_archivo, stream=True)
+        if response.status_code == 200:
+            f = io.BytesIO(response.content)
+        else:
+            print("Error al acceder al stream.")
+            return {}
+    else:
+        f = open(nombre_archivo, 'rb')
+
+    data = f.read(10 * 1024 * 1024)  # hasta 10MB
+
+    # continuar con el código original...
+
         sample = f.read()
 
     http_method = "POST"
