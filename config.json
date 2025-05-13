@@ -1,0 +1,8 @@
+{
+    "stream_url": "http://stream.radio.url/",
+    "audio_file": "sample.wav",
+    "station_name": "Power FM",
+    "acr_key": "${ACR_KEY}",
+    "acr_secret": "${ACR_SECRET}",
+    "acr_host": "${ACR_HOST}"
+}
