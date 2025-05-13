@@ -15,7 +15,7 @@ ACR_SECRET = config['acr_secret']
 ACR_HOST = config['acr_host']
 
 # Ejecutar flujo completo
-grabar_audio(NOMBRE_ARCHIVO, EMISORA_URL)
+NOMBRE_ARCHIVO = "http://stream-uk1.radioparadise.com/mp3-128"
 resultado = reconocer_cancion(NOMBRE_ARCHIVO, ACR_KEY, ACR_SECRET, ACR_HOST)
 
 if resultado.get("status", {}).get("msg") == "Success":
