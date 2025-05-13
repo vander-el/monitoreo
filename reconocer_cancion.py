@@ -3,9 +3,6 @@ import hmac
 import base64
 import time
 import requests
-
-def reconocer_cancion(nombre_archivo, acr_key, acr_secret, acr_host):
-  import requests
 import io
 
 def reconocer_cancion(nombre_archivo, acr_key, acr_secret, acr_host):
@@ -20,10 +17,7 @@ def reconocer_cancion(nombre_archivo, acr_key, acr_secret, acr_host):
         f = open(nombre_archivo, 'rb')
 
     data = f.read(10 * 1024 * 1024)  # hasta 10MB
-
-    # continuar con el código original...
-
-        sample = f.read()
+    sample = f.read()
 
     http_method = "POST"
     http_uri = "/v1/identify"
