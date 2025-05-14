@@ -1,0 +1,53 @@
+from flask import Flask, request, jsonify
+import hashlib, hmac, base64, time, requests
+
+app = Flask(__name__)
+
+# Claves de ACRCloud
+ACR_KEY = "1ed85cb64daebdb0f07896ebb52613c3"
+ACR_SECRET = "1Pfuhr2QzQN8rQ7fwWpOO6EZcb0acwnbvPlIlnCn"
+ACR_HOST = "identify-us-west-2.acrcloud.com"
+
+@app.route('/reconocer', methods=['POST'])
+def reconocer():
+    if 'audio' not in request.files:
+        return jsonify({"error": "Archivo de audio no recibido"}), 400
+
+    audio = request.files['audio'].read()
+
+    http_method = "POST"
+    http_uri = "/v1/identify"
+    data_type = "audio"
+    signature_version = "1"
+    timestamp = str(int(time.time()))
+
+    string_to_sign = f"{http_method}\n{http_uri}\n{ACR_KEY}\n{data_type}\n{signature_version}\n{timestamp}"
+    sign = base64.b64encode(
+        hmac.new(ACR_SECRET.encode('ascii'), string_to_sign.encode('ascii'), digestmod=hashlib.sha1).digest()
+    ).decode('ascii')
+
+    files = {
+        'sample': audio,
+        'access_key': ACR_KEY,
+        'data_type': data_type,
+        'signature_version': signature_version,
+        'signature': sign,
+        'timestamp': timestamp,
+    }
+
+    url = f'https://{ACR_HOST}/v1/identify'
+    response = requests.post(url, files=files)
+    data = response.json()
+
+    if data.get("status", {}).get("msg") == "Success":
+        cancion = data["metadata"]["music"][0]
+        return jsonify({
+            "titulo": cancion["title"],
+            "artista": cancion["artists"][0]["name"]
+        })
+    else:
+        return jsonify({"error": "No se pudo reconocer la canción"}), 200
+
+# Para Render
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=10000)
